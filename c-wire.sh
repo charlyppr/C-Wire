@@ -2,12 +2,15 @@
 
 # Fonction pour afficher l'aide
 afficher_aide() {
-    echo "Usage : c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]"
+    echo " "
+    echo "Comment l'utiliser : c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]"
+    echo " "
     echo "Paramètres :"
     echo "  <chemin_csv>         : Chemin vers le fichier CSV des données (obligatoire)"
     echo "  <type_station>       : Type de station (hvb | hva | lv) (obligatoire)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all) (obligatoire)"
     echo "  [identifiant_centrale]: Identifiant de centrale (optionnel)"
+    echo " "
     echo "  [-h]                 : Affiche l'aide"
 }
 
