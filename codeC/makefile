@@ -10,15 +10,15 @@ all: $(TARGET)
 
 # Compilation du programme
 $(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET)
+	@$(CC) $(OBJS) -o $(TARGET)
 
 # Règle générique pour les fichiers .o
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Nettoyage
 clean:
-	rm -f $(OBJS) $(TARGET)
+	@rm -f $(OBJS) $(TARGET)
 
 # Pour éviter les conflits avec des fichiers du même nom
 .PHONY: all clean

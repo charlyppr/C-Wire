@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     "/Users/charly/Documents/École/Info/C-Wire/C-Wire/codeC/output/main"
+relocations:     []
+...

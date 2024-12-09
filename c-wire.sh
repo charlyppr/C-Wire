@@ -6,16 +6,13 @@ afficher_aide() {
     echo "Comment l'utiliser : c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]"
     echo " "
     echo "Paramètres :"
-    echo "  <chemin_csv>         : Chemin vers le fichier CSV des données (obligatoire)"
-    echo "  <type_station>       : Type de station (hvb | hva | lv) (obligatoire)"
-    echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all) (obligatoire)"
-    echo "  [identifiant_centrale]: Identifiant de centrale (optionnel)"
+    echo "  <chemin_csv>         : Chemin vers le fichier CSV des données"
+    echo "  <type_station>       : Type de station (hvb | hva | lv)"
+    echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
+    echo "  [identifiant_centrale]: Identifiant de centrale"
     echo " "
     echo "  [-h]                 : Affiche l'aide"
 }
-
-# Mesure du temps de début
-start_time=$(date +%s)
 
 # Vérification de l'option d'aide (-h)
 if [[ "$*" == *"-h"* ]]; then
@@ -37,6 +34,13 @@ chemin_csv="$1"
 type_station="$2"
 type_consommateur="$3"
 identifiant_centrale="${4:-}"
+
+# Vérifier si l'identifiant de centrale est fourni
+if [ -n "$identifiant_centrale" ]; then
+    central_id_provided=true
+else
+    central_id_provided=false
+fi
 
 # Vérification de la présence du fichier CSV
 if [ ! -f "$chemin_csv" ]; then
@@ -103,15 +107,12 @@ fi
 
 # Vérifier et compiler le programme C
 cd codeC
-if [ ! -f "./programme" ]; then
-    # echo "Compilation du programme C..."
-    make all
-    if [ $? -ne 0 ]; then
-        echo "Erreur : La compilation du programme C a échoué."
-        cd ..
-        exit 1
-    fi
-    # echo "Compilation réussie."
+make clean
+make all
+if [ $? -ne 0 ]; then
+    echo "Erreur : La compilation du programme C a échoué."
+    cd ..
+    exit 1
 fi
 cd ..
 
@@ -146,20 +147,48 @@ esac
 # Filtrage avec grep
 grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' > $fichier_filtre
 
-# Lancer le programme C
-./codeC/programme "$fichier_filtre" "$tmp_dir/resultats.csv"
-if [ $? -ne 0 ]; then
-    echo "Erreur lors de l'exécution du programme C."
-    end_time=$(date +%s)
-    process_duration=$(echo "$end_time - $process_start_time" | bc)
-    echo "Durée de traitement : ${process_duration}.0sec"
+# Vérifiez si le fichier filtre n'est pas vide
+if [ ! -s "$fichier_filtre" ]; then
+    echo "Aucune donnée filtrée à traiter."
+    echo "Durée de traitement : 0.0sec"
+    exit 0
+fi
+
+# Déterminer le nom du fichier de sortie
+output_filename="${type_station}_${type_consommateur}"
+if [ "$central_id_provided" = true ]; then
+    output_filename="${output_filename}_${identifiant_centrale}"
+fi
+output_filename="${output_filename}.csv"
+
+# Créer l'en-tête du fichier CSV
+station_header=""
+case "$type_station" in
+    "hvb") station_header="Station HVB";;
+    "hva") station_header="Station HVA";;
+    "lv") station_header="Station LV";;
+esac
+
+consumer_header=""
+case "$type_consommateur" in
+    "comp") consumer_header="Consommation (entreprises)";;
+    "indiv") consumer_header="Consommation (particuliers)";;
+    "all") consumer_header="Consommation (tous)";;
+esac
+
+header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
+
+# Écrire l'en-tête dans le fichier de sortie
+echo "$header" > "$output_filename"
+
+# Passer les données filtrées au programme C via un pipe et capturer la sortie
+output=$(./codeC/programme < "$fichier_filtre")
+
+# Vérifier si le programme C a retourné une sortie
+if [ -z "$output" ]; then
+    echo "Erreur : Le programme C n'a retourné aucune donnée."
     exit 1
 fi
 
-# Mesure du temps de fin
-end_time=$(date +%s)
-
-# Calcul de la durée de traitement
-process_duration=$(echo "$end_time - $process_start_time" | bc)
-echo "Durée de traitement : ${process_duration}.0sec"
-echo "Traitement terminé avec succès. Les résultats sont dans $tmp_dir/resultats.csv."
+# Écrire les résultats dans le fichier de sortie
+echo "$output" >> "$output_filename"
