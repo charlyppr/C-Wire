@@ -69,4 +69,38 @@ if [ -n "$identifiant_centrale" ]; then
     echo "Identifiant de centrale : $identifiant_centrale"
 fi
 
+# Vérifier la présence des dossiers tmp et graphs
+tmp_dir="tmp"
+graphs_dir="graphs"
+
+# Vérifier et créer le dossier 'graphs' s'il n'existe pas
+if [ ! -d "$graphs_dir" ]; then
+    mkdir "$graphs_dir"
+    if [ $? -ne 0 ]; then
+        echo "Erreur : Impossible de créer le dossier '$graphs_dir'."
+        exit 1
+    fi
+    echo "Dossier '$graphs_dir' créé."
+else
+    echo "Dossier '$graphs_dir' existe déjà."
+fi
+
+# Vérifier et créer le dossier 'tmp' s'il n'existe pas, sinon le vider
+if [ ! -d "$tmp_dir" ]; then
+    mkdir "$tmp_dir"
+    if [ $? -ne 0 ]; then
+        echo "Erreur : Impossible de créer le dossier '$tmp_dir'."
+        exit 1
+    fi
+    echo "Dossier '$tmp_dir' créé."
+else
+    # Vider le dossier 'tmp'
+    rm -rf "${tmp_dir:?}/"*
+    if [ $? -ne 0 ]; then
+        echo "Erreur : Impossible de vider le dossier '$tmp_dir'."
+        exit 1
+    fi
+    echo "Dossier '$tmp_dir' vidé."
+fi
+
 # Lancer le traitement (à compléter avec les autres tâches du script)
