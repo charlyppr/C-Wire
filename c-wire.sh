@@ -41,7 +41,7 @@ identifiant_centrale="${4:-}"
 # Vérification de la présence du fichier CSV
 if [ ! -f "$chemin_csv" ]; then
     echo "Erreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect."
-    afficher_aide
+    # afficher_aide
     echo "Durée de traitement : 0.0sec"
     exit 1
 fi
@@ -49,7 +49,7 @@ fi
 # Vérification de la validité du type de station
 if [[ "$type_station" != "hvb" && "$type_station" != "hva" && "$type_station" != "lv" ]]; then
     echo "Erreur : Type de station invalide. Valeurs possibles : hvb, hva, lv."
-    afficher_aide
+    # afficher_aide
     echo "Durée de traitement : 0.0sec"
     exit 1
 fi
@@ -57,7 +57,7 @@ fi
 # Vérification de la validité du type de consommateur
 if [[ "$type_consommateur" != "comp" && "$type_consommateur" != "indiv" && "$type_consommateur" != "all" ]]; then
     echo "Erreur : Type de consommateur invalide. Valeurs possibles : comp, indiv, all."
-    afficher_aide
+    # afficher_aide
     echo "Durée de traitement : 0.0sec"
     exit 1
 fi
@@ -65,7 +65,7 @@ fi
 # Vérification des combinaisons interdites
 if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_consommateur" == "all" || "$type_consommateur" == "indiv" ]]; }; then
     echo "Erreur : Les combinaisons $type_station avec $type_consommateur sont interdites."
-    afficher_aide
+    # afficher_aide
     echo "Durée de traitement : 0.0sec"
     exit 1
 fi
@@ -101,24 +101,50 @@ else
     echo "Dossier '$tmp_dir' vidé."
 fi
 
-# Vérifier la présence de l'exécutable C
-if [ ! -f "./codeC/programme" ]; then
-    echo "L'exécutable du programme C est introuvable. Lancement de la compilation..."
-    make -C ./codeC
+# Vérifier et compiler le programme C
+cd codeC
+if [ ! -f "./programme" ]; then
+    # echo "Compilation du programme C..."
+    make all
     if [ $? -ne 0 ]; then
         echo "Erreur : La compilation du programme C a échoué."
-        echo "Durée de traitement : 0.0sec"
+        cd ..
         exit 1
     fi
-    echo "Compilation réussie."
+    # echo "Compilation réussie."
 fi
+cd ..
 
 # Mesure du temps après préparation
 process_start_time=$(date +%s)
 
+
 # Filtrage des données
 fichier_filtre="$tmp_dir/filtre.csv"
-grep ";$type_station;" "$chemin_csv" | grep ";$type_consommateur;" > "$fichier_filtre"
+
+# Construire les motifs de grep en fonction des paramètres
+station_pattern=""
+case "$type_station" in
+    "hvb") station_pattern="^[0-9]+;[0-9]+;-;-;";;
+    "hva") station_pattern="^[0-9]+;[0-9-]+;[0-9]+;-;";;
+    "lv") 
+        case "$type_consommateur" in
+            "comp") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;[0-9-]+;-;";;
+            "indiv") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;-;[0-9-]+;";;
+            "all") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;";;
+        esac
+esac
+
+# Déterminer le numéro de la colonne de la ligne de la station
+numero_ligne=""
+case "$type_station" in
+    "hvb") numero_ligne="2";;
+    "hva") numero_ligne="3";;
+    "lv") numero_ligne="4";;
+esac
+
+# Filtrage avec grep
+grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' > $fichier_filtre
 
 # Lancer le programme C
 ./codeC/programme "$fichier_filtre" "$tmp_dir/resultats.csv"
