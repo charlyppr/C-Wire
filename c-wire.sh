@@ -108,7 +108,7 @@ fi
 # Vérifier et compiler le programme C
 cd codeC
 make clean
-make all
+make
 if [ $? -ne 0 ]; then
     echo "Erreur : La compilation du programme C a échoué."
     cd ..

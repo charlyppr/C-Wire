@@ -6,7 +6,7 @@ SRCS = main.c
 OBJS = $(SRCS:.c=.o)
 
 # Règle par défaut
-all: $(TARGET)
+make: $(TARGET)
 
 # Compilation du programme
 $(TARGET): $(OBJS)
