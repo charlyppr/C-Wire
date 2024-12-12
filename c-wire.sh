@@ -17,7 +17,7 @@ afficher_aide() {
 # Vérification de l'option d'aide (-h)
 if [[ "$*" == *"-h"* ]]; then
     afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 0
 fi
 
@@ -25,7 +25,7 @@ fi
 if [ "$#" -lt 3 ]; then
     echo "Erreur : Nombre de paramètres insuffisant."
     afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 1
 fi
 
@@ -46,7 +46,7 @@ fi
 if [ ! -f "$chemin_csv" ]; then
     echo "Erreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect."
     # afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 1
 fi
 
@@ -54,7 +54,7 @@ fi
 if [[ "$type_station" != "hvb" && "$type_station" != "hva" && "$type_station" != "lv" ]]; then
     echo "Erreur : Type de station invalide. Valeurs possibles : hvb, hva, lv."
     # afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 1
 fi
 
@@ -62,7 +62,7 @@ fi
 if [[ "$type_consommateur" != "comp" && "$type_consommateur" != "indiv" && "$type_consommateur" != "all" ]]; then
     echo "Erreur : Type de consommateur invalide. Valeurs possibles : comp, indiv, all."
     # afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 1
 fi
 
@@ -70,7 +70,7 @@ fi
 if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_consommateur" == "all" || "$type_consommateur" == "indiv" ]]; }; then
     echo "Erreur : Les combinaisons $type_station avec $type_consommateur sont interdites."
     # afficher_aide
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 1
 fi
 
@@ -149,7 +149,7 @@ grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr
 # Vérifiez si le fichier filtre n'est pas vide
 if [ ! -s "$fichier_filtre" ]; then
     echo "Aucune donnée filtrée à traiter."
-    echo "Durée de traitement : 0.0sec"
+    echo "Durée de traitement : 0 sec"
     exit 0
 fi
 
