@@ -116,6 +116,7 @@ if [ $? -ne 0 ]; then
 fi
 cd ..
 
+# Démarrer le chronomètre
 debut=$(date +%s)
 
 
@@ -192,8 +193,37 @@ fi
 # Écrire les résultats dans le fichier de sortie
 echo "$output" >> "$output_filename"
 
+# Si on est dans le cas lv all, on crée lv_all_minmax.csv
+if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
+    input_file="$output_filename"
+    output_minmax="lv_all_minmax.csv"
 
+    # Calculer la différence entre la capacité et la consommation
+    awk -F: '{ diff = $2 - $3; print $0 ":" diff }' "$input_file" > lv_all_with_diff.csv
+
+    # On trie par le quatrième champ (la différence), numérique
+    sort -t: -k4,4n lv_all_with_diff.csv > lv_all_sorted.csv
+
+    # On prend les 10 premières lignes (les plus petites différences)
+    head -n 10 lv_all_sorted.csv | cut -d: -f1-3 > lv_all_top10_min.csv
+
+    # On prend les 10 dernières lignes (les plus grandes différences)
+    # tail -n 10 lv_all_sorted.csv | cut -d: -f1-3 > lv_all_top10_max.csv
+
+    # On combine les deux fichiers
+    # cat lv_all_top10_min.csv lv_all_top10_max.csv > "$output_minmax"
+    cat lv_all_top10_min.csv > "$output_minmax"
+
+    # Nettoyage des fichiers temporaires
+    rm lv_all_with_diff.csv lv_all_sorted.csv lv_all_top10_min.csv lv_all_top10_max.csv
+
+    echo "Fichier $output_minmax généré."
+fi
+
+
+# Arrêter le chronomètre
 fin=$(date +%s)
 duree=$(( $fin - $debut ))
 
+# Afficher le temps de traitement
 echo "Durée de traitement : $duree secondes"
