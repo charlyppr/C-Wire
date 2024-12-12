@@ -3,13 +3,13 @@
 # Fonction pour afficher l'aide
 afficher_aide() {
     echo " "
-    echo "Comment l'utiliser : c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]"
+    echo "Comment l'utiliser : c-wire.sh <chemin_csv> <type_station> <type_consommateur>"
     echo " "
     echo "Paramètres :"
     echo "  <chemin_csv>         : Chemin vers le fichier CSV des données"
     echo "  <type_station>       : Type de station (hvb | hva | lv)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
-    echo "  [identifiant_centrale]: Identifiant de centrale"
+    # echo "  [identifiant_centrale]: Identifiant de centrale"
     echo " "
     echo "  [-h]                 : Affiche l'aide"
 }
@@ -115,9 +115,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 cd ..
-
-# Mesure du temps après préparation
-process_start_time=$(date +%s)
 
 
 # Filtrage des données
