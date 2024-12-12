@@ -116,6 +116,8 @@ if [ $? -ne 0 ]; then
 fi
 cd ..
 
+debut=$(date +%s)
+
 
 # Filtrage des données
 fichier_filtre="$tmp_dir/filtre.csv"
@@ -189,3 +191,9 @@ fi
 
 # Écrire les résultats dans le fichier de sortie
 echo "$output" >> "$output_filename"
+
+
+fin=$(date +%s)
+duree=$(( $fin - $debut ))
+
+echo "Durée de traitement : $duree secondes"
