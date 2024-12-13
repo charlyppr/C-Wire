@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 clear
 
 # Fonction pour afficher l'aide
@@ -89,33 +91,26 @@ tests_dir="tests"
 tmp_dir="tmp"
 graphs_dir="graphs"
 
-# Vérification de la présence des dossiers tmp et graphs
-if [ ! -d "$graphs_dir" ]; then
-    mkdir "$graphs_dir"
-    if [ $? -ne 0 ]; then
-        echo -e "\033[31mErreur : Impossible de créer le dossier '$graphs_dir'.\033[0m"
+# Vérification les dépendances
+for cmd in awk gnuplot make gcc; do
+    if ! command -v $cmd &> /dev/null; then
+        echo -e "\033[31mErreur : La commande '$cmd' n'est pas installée.\033[0m"
         exit 1
     fi
-    echo -e "Dossier '\033[1m$graphs_dir\033[0m' a bien été créé."
-else
-    echo -e "Dossier '\033[1m$graphs_dir\033[0m' existe déjà."
-fi
+done
 
-if [ ! -d "$tmp_dir" ]; then
-    mkdir "$tmp_dir"
-    if [ $? -ne 0 ]; then
-        echo -e "\033[31mErreur : Impossible de créer le dossier '$tmp_dir'.\033[0m"
-        exit 1
+# Vérification de la présence des dossiers tmp et graphs
+for dir in "$tests_dir" "$tmp_dir" "$graphs_dir"; do
+    if [ ! -d "$dir" ]; then
+        mkdir "$dir"
+        echo -e "Dossier '\033[1m$dir\033[0m' a bien été créé."
+    elif [ "$dir" == "$tmp_dir" ]; then
+        rm -rf "${tmp_dir:?}/"*
+        echo -e "Dossier '\033[1m$tmp_dir\033[0m' existe déjà et a bien été vidé."
+    else
+        echo -e "Dossier '\033[1m$dir\033[0m' existe déjà."
     fi
-    echo -e "Dossier '\033[1m$tmp_dir\033[0m' a bien été créé."
-else
-    rm -rf "${tmp_dir:?}/"*
-    if [ $? -ne 0 ]; then
-        echo -e "\033[31mErreur : Impossible de vider le dossier '$tmp_dir'.\033[0m"
-        exit 1
-    fi
-    echo -e "Dossier '\033[1m$tmp_dir\033[0m' existe déjà et a bien été vidé."
-fi
+done
 
 # Vérifier et compiler le programme C
 cd codeC
