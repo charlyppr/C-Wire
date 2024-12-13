@@ -229,11 +229,11 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     echo -e "Graphique '\033[1mlv_all_minmax.png\033[0m' généré."
 fi
 
+echo -e "\n\033[1m\033[32mTraitement terminé avec succès.\033[0m"
+
 # Arrêter le chronomètre
 fin=$(date +%s)
 duree=$(( $fin - $debut ))
 
 # Afficher le temps de traitement
-echo -e "\nDurée de traitement : \033[1m$duree secondes\033[0m"
-
-echo -e "\n\033[1m\033[32mTraitement terminé avec succès.\033[0m\n"
+echo -e "\nDurée de traitement : \033[1m$duree secondes\033[0m\n"
