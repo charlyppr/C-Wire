@@ -175,16 +175,16 @@ output_filename="${type_station}_${type_consommateur}"
 # Créer l'en-tête du fichier CSV
 station_header=""
 case "$type_station" in
-    "hvb") station_header="Station HVB";;
-    "hva") station_header="Station HVA";;
-    "lv") station_header="Station LV";;
+    ("hvb") station_header="Station HVB";;
+    ("hva") station_header="Station HVA";;
+    ("lv") station_header="Station LV";;
 esac
 
 consumer_header=""
 case "$type_consommateur" in
-    "comp") consumer_header="Consommation (entreprises)";;
-    "indiv") consumer_header="Consommation (particuliers)";;
-    "all") consumer_header="Consommation (tous)";;
+    ("comp") consumer_header="Consommation (entreprises)";;
+    ("indiv") consumer_header="Consommation (particuliers)";;
+    ("all") consumer_header="Consommation (tous)";;
 esac
 
 header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
