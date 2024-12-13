@@ -225,5 +225,31 @@ fi
 fin=$(date +%s)
 duree=$(( $fin - $debut ))
 
+# Si on est dans le cas lv all, on crée lv_all_minmax.csv
+if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
+    input_file="$output_filename"
+    output_minmax="lv_all_minmax.csv"
+
+    # Calculer la différence entre la capacité et la consommation
+    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" > $tmp_dir/lv_all_with_diff.csv
+
+    # On trie les lignes par différence
+    sort -t: -k4,4n $tmp_dir/lv_all_with_diff.csv > $tmp_dir/lv_all_sorted.csv
+
+    # On prend les 10 premières lignes (les plus grandes différences)
+    head -n 10 $tmp_dir/lv_all_sorted.csv | cut -d: -f1-3 > $tmp_dir/lv_all_top10_min.csv
+
+    # On prend les 10 dernières lignes (les plus petites différences)
+    tail -n 10 $tmp_dir/lv_all_sorted.csv | cut -d: -f1-3 > $tmp_dir/lv_all_top10_max.csv
+
+    # On combine les deux fichiers
+    cat $tmp_dir/lv_all_top10_min.csv $tmp_dir/lv_all_top10_max.csv > "$output_minmax"
+    # cat $tmp_dir/lv_all_top10_min.csv > "$output_minmax"
+
+    gnuplot graph.gp
+
+    echo "Fichier $output_minmax généré."
+fi
+
 # Afficher le temps de traitement
 echo "Durée de traitement : $duree secondes"
