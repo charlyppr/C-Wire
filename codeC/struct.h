@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Structure pour un noeud AVL
 typedef struct NoeudAVL {
     int id_station;
     long consommation;

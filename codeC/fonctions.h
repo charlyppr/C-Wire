@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Fonction pour créer un nouveau nœud AVL
+// Fonction pour créer un nouveau noeud AVL
 NoeudAVL* creerNoeud(int id_station, long capacite, long consommation) {
     NoeudAVL* noeud = (NoeudAVL*)malloc(sizeof(NoeudAVL));
     if (!noeud) {
@@ -20,7 +20,7 @@ NoeudAVL* creerNoeud(int id_station, long capacite, long consommation) {
     return noeud;
 }
 
-// Fonction pour obtenir les maximum et minimum
+// Fonction pour obtenir les maximums et minimums
 int maximum(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -67,16 +67,19 @@ NoeudAVL* rotationGauche(NoeudAVL* arbre) {
     return pivot;
 }
 
+// Double rotation gauche
 NoeudAVL* doubleRotationGauche(NoeudAVL* arbre) {
     arbre->droite = rotationDroite(arbre->droite);
     return rotationGauche(arbre);
 }
 
+// Double rotation droite
 NoeudAVL* doubleRotationDroite(NoeudAVL* arbre) {
     arbre->gauche = rotationGauche(arbre->gauche);
     return rotationDroite(arbre);
 }
 
+// Fonction pour équilibrer l'arbre AVL
 NoeudAVL* equilibrerAVL(NoeudAVL* a){
     if (a->equilibre >= 2) {
         if (a->droite->equilibre >= 0) {
@@ -96,7 +99,7 @@ NoeudAVL* equilibrerAVL(NoeudAVL* a){
 }
 
 
-// Fonction pour insérer un nœud dans l'arbre AVL
+// Fonction pour insérer un noeud dans l'arbre AVL
 NoeudAVL* inserer(NoeudAVL* noeud, int id_station, long capacite, long consommation, int* h) {
     if(noeud == NULL) {
         *h = 1;
