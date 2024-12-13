@@ -1,6 +1,6 @@
 # Configuration du terminal et de la sortie
 set terminal pngcairo size 1200,800
-set output 'graphs/lv_consommation.png'
+set output 'graphs/lv_all_minmax.png'
 
 # Arrière-plan thème sombre plus clair pour un meilleur contraste
 set object 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb "#353535" fillstyle solid 1.0
@@ -46,5 +46,5 @@ set border 3
 # $3 = Consommation
 # Barre verte : min(consommation, capacité)
 # Barre rouge : dépassement si consommation > capacité
-plot 'tests/lv_all_minmax.csv' using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
-     '' using ($3>$2?$3-$2:0) title 'Consommation excédentaire' lc rgb "red"
+plot 'tests/lv_all_minmax.csv' skip 1 using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
+     '' skip 1 using ($3>$2?$3-$2:0) title 'Consommation excédentaire' lc rgb "red"
