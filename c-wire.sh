@@ -4,30 +4,27 @@ clear
 
 # Fonction pour afficher l'aide
 afficher_aide() {
-    echo " "
-    echo "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur>"
-    echo " "
+    echo -e "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur>\n"
     echo "Paramètres :"
     echo "  <chemin_csv>         : Chemin vers le fichier CSV des données"
     echo "  <type_station>       : Type de station (hvb | hva | lv)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
-    # echo "  [identifiant_centrale]: Identifiant de centrale"
-    echo " "
-    echo "  [-h]                 : Affiche l'aide"
+    echo -e "\nExemple : ./c-wire.sh input/data.csv hva comp\n"
+    echo -e "  [-h]                 : Affiche l'aide\n"
 }
 
 # Vérification de l'option d'aide (-h)
 if [[ "$*" == *"-h"* ]]; then
     afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 0
 fi
 
 # Vérification du nombre d'arguments
 if [ "$#" -lt 3 ]; then
-    echo -e "\033[31mErreur : Nombre de paramètres insuffisant.\033[0m"
+    echo -e "\033[31mErreur : Nombre de paramètres insuffisant.\033[0m\n"
     afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 1
 fi
 
@@ -40,32 +37,33 @@ identifiant_centrale="${4:-}"
 # Vérification de la présence du fichier CSV
 if [ ! -f "$chemin_csv" ]; then
     echo -e "\033[31mErreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect.\033[0m"
+    echo -e "Vérifier que le fichier est bien présent dans le dossier '\033[1minput\033[0m' et que son nom est correct.\n"
     # afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 1
 fi
 
 # Vérification de la validité du type de station
 if [[ "$type_station" != "hvb" && "$type_station" != "hva" && "$type_station" != "lv" ]]; then
-    echo -e "\033[31mErreur : Type de station invalide. Valeurs possibles : hvb, hva, lv.\033[0m"
+    echo -e "\033[31mErreur : Type de station invalide. \033[1mValeurs possibles : hvb, hva, lv.\033[0m"
     # afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 1
 fi
 
 # Vérification de la validité du type de consommateur
 if [[ "$type_consommateur" != "comp" && "$type_consommateur" != "indiv" && "$type_consommateur" != "all" ]]; then
-    echo -e "\033[31mErreur : Type de consommateur invalide. Valeurs possibles : comp, indiv, all.\033[0m"
+    echo -e "\033[31mErreur : Type de consommateur invalide. \033[1mValeurs possibles : comp, indiv, all.\033[0m"
     # afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 1
 fi
 
 # Vérification des combinaisons interdites
 if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_consommateur" == "all" || "$type_consommateur" == "indiv" ]]; }; then
-    echo -e "\033[31mErreur : Les combinaisons $type_station avec $type_consommateur sont interdites.\033[0m"
+    echo -e "\033[31mErreur : Les combinaisons \033[1m$type_station\033[0m\033[31m avec \033[1m$type_consommateur\033[0m\033[31m sont interdites.\033[0m"
     # afficher_aide
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 1
 fi
 
@@ -150,7 +148,7 @@ echo -e "Fichier '\033[1m$fichier_filtre\033[0m' généré."
 # Vérifiez si le fichier filtre n'est pas vide
 if [ ! -s "$tmp_dir/$fichier_filtre" ]; then
     echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
-    echo "Durée de traitement : 0 sec"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
     exit 0
 fi
 
