@@ -6,7 +6,7 @@ clear
 afficher_aide() {
     echo -e "Comment l'utiliser : ./c-wire.sh <fichier_csv> <type_station> <type_consommateur>\n"
     echo "Paramètres :"
-    echo "  <chemin_csv>         : Chemin vers le fichier CSV des données"
+    echo "  <fichier_csv>         : Nom du fichier CSV des données"
     echo "  <type_station>       : Type de station (hvb | hva | lv)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
     echo -e "\nExemple : ./c-wire.sh data.csv hva comp\n"
