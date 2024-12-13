@@ -55,14 +55,14 @@ avec :
 > Pas besoin de mettre `input/fichier_csv` dans le terminal, `fichier_csv` est suffisant.
 
 - **`type_station`** : Type de station électrique
-    - hvb : Haute Tension B
-    - hva : Haute Tension A
-    - lv : Basse Tension
+    - **hvb** : Haute Tension B
+    - **hva** : Haute Tension A
+    - **lv** : Basse Tension
 
 - **`type_consommateur`**  : Catégorie de consommateur
-    - comp : Entreprises
-    - indiv : Particuliers
-    - all : Tous types
+    - **comp** : Entreprises
+    - **indiv** : Particuliers
+    - **all** : Tous types
 
 ### Exemple d'utilisation
 ```bash
@@ -88,14 +88,20 @@ C-Wire/
 ├── graphs/ 
 │ 
 ├── input/ 
-│ └── fichier_csv.csv 
+│ ├── fichier_csv.csv  // Fichier à ajouter
+│ └── graph.gp 
 │ 
 ├── tests/ 
 │ 
 ├── tmp/ 
-│ └── graph.gp 
 │ 
 ├── c-wire.sh 
 │ 
 └── README.md
 ```
+
+## Auteurs
+
+- **Charly Pupier** - [charly.pupier@etu.cyu.fr](mailto:charly.pupier@etu.cyu.fr)
+- **Bouchra Zamoum** - [bouchra.zamoum@etu.cyu.fr](mailto:bouchra.zamoum@etu.cyu.fr)
+- **Mathilde Nelva-Pasqual** - [mathilde.nelva-pasqual@etu.cyu.fr](mailto:mathilde.nelva-pasqual@etu.cyu.fr)
