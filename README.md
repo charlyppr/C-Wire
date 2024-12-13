@@ -57,7 +57,11 @@ cd C-Wire
 
 ### Exemple d'utilisation
 ```bash
-./c-wire.sh input/data.csv hvb comp
+./c-wire.sh data.csv hvb comp
 ```
 
 Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se concentrant sur les stations de type **HVB** et les consommateurs de type **entreprises**.
+
+> [!WARNING] 
+> Le fichier contenant les données doit se trouver dans le dossier `input`.
+

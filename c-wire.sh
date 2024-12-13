@@ -4,12 +4,12 @@ clear
 
 # Fonction pour afficher l'aide
 afficher_aide() {
-    echo -e "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur>\n"
+    echo -e "Comment l'utiliser : ./c-wire.sh <fichier_csv> <type_station> <type_consommateur>\n"
     echo "Paramètres :"
     echo "  <chemin_csv>         : Chemin vers le fichier CSV des données"
     echo "  <type_station>       : Type de station (hvb | hva | lv)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
-    echo -e "\nExemple : ./c-wire.sh input/data.csv hva comp\n"
+    echo -e "\nExemple : ./c-wire.sh data.csv hva comp\n"
     echo -e "  [-h]                 : Affiche l'aide\n"
 }
 
@@ -39,7 +39,7 @@ if [ "$#" -lt 3 ]; then
 fi
 
 # Assignation des arguments aux variables
-chemin_csv="$1"
+chemin_csv="input/$1"
 type_station="$2"
 type_consommateur="$3"
 identifiant_centrale="${4:-}"
