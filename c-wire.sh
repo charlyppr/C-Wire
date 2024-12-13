@@ -230,7 +230,7 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     cat $tmp_dir/lv_all_top10_min.csv $tmp_dir/lv_all_top10_max.csv >> $tests_dir/"$output_minmax"
     # cat $tmp_dir/lv_all_top10_min.csv > "$output_minmax"
 
-    gnuplot graph.gp
+    gnuplot input/graph.gp
 
     echo -e "Fichier '\033[1m$output_minmax\033[0m' généré."
     echo -e "Graphique '\033[1mlv_all_minmax.png\033[0m' généré."

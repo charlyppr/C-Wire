@@ -73,3 +73,29 @@ Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se
 
 > [!WARNING] 
 > Le fichier contenant les données `ficher_csv` doit se trouver dans le dossier `input`.  
+
+## Organisation des fichiers
+
+```yaml
+C-Wire/
+│ 
+├── codeC/ 
+│ ├── fonctions.h 
+│ ├── main.c 
+│ ├── makefile 
+│ └── struct.h 
+│ 
+├── graphs/ 
+│ 
+├── input/ 
+│ └── fichier_csv.csv 
+│ 
+├── tests/ 
+│ 
+├── tmp/ 
+│ └── graph.gp 
+│ 
+├── c-wire.sh 
+│ 
+└── README.md
+```
