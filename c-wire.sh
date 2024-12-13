@@ -13,10 +13,20 @@ afficher_aide() {
     echo -e "  [-h]                 : Affiche l'aide\n"
 }
 
+# Fonction pour afficher les combinaisons possibles
+afficher_combinaisons() {
+    echo -e "Combinaisons possibles :"
+    echo -e "  \033[1mhvb comp\033[0m"
+    echo -e "  \033[1mhva comp\033[0m"
+    echo -e "  \033[1mlv comp\033[0m"
+    echo -e "  \033[1mlv indiv\033[0m"
+    echo -e "  \033[1mlv all\033[0m\n"
+}
+
 # Vérification de l'option d'aide (-h)
 if [[ "$*" == *"-h"* ]]; then
     afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 0
 fi
 
@@ -24,7 +34,7 @@ fi
 if [ "$#" -lt 3 ]; then
     echo -e "\033[31mErreur : Nombre de paramètres insuffisant.\033[0m\n"
     afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -39,31 +49,31 @@ if [ ! -f "$chemin_csv" ]; then
     echo -e "\033[31mErreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect.\033[0m"
     echo -e "Vérifier que le fichier est bien présent dans le dossier '\033[1minput\033[0m' et que son nom est correct.\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 1
 fi
 
 # Vérification de la validité du type de station
 if [[ "$type_station" != "hvb" && "$type_station" != "hva" && "$type_station" != "lv" ]]; then
-    echo -e "\033[31mErreur : Type de station invalide. \033[1mValeurs possibles : hvb, hva, lv.\033[0m"
+    echo -e "\033[31mErreur : Type de station invalide. \n\033[1mValeurs possibles : hvb, hva, lv.\033[0m\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 1
 fi
 
 # Vérification de la validité du type de consommateur
 if [[ "$type_consommateur" != "comp" && "$type_consommateur" != "indiv" && "$type_consommateur" != "all" ]]; then
-    echo -e "\033[31mErreur : Type de consommateur invalide. \033[1mValeurs possibles : comp, indiv, all.\033[0m"
+    echo -e "\033[31mErreur : Type de consommateur invalide. \n\033[1mValeurs possibles : comp, indiv, all.\033[0m\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 1
 fi
 
 # Vérification des combinaisons interdites
 if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_consommateur" == "all" || "$type_consommateur" == "indiv" ]]; }; then
-    echo -e "\033[31mErreur : Les combinaisons \033[1m$type_station\033[0m\033[31m avec \033[1m$type_consommateur\033[0m\033[31m sont interdites.\033[0m"
-    # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "\033[31mErreur : Les combinaisons \033[1m$type_station\033[0m\033[31m avec \033[1m$type_consommateur\033[0m\033[31m sont interdites.\033[0m\n"
+    afficher_combinaisons
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -148,7 +158,7 @@ echo -e "Fichier '\033[1m$fichier_filtre\033[0m' généré."
 # Vérifiez si le fichier filtre n'est pas vide
 if [ ! -s "$tmp_dir/$fichier_filtre" ]; then
     echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 0
 fi
 
@@ -225,3 +235,5 @@ duree=$(( $fin - $debut ))
 
 # Afficher le temps de traitement
 echo -e "\nDurée de traitement : \033[1m$duree secondes\033[0m"
+
+echo -e "\n\033[1m\033[32mTraitement terminé avec succès.\033[0m\n"
