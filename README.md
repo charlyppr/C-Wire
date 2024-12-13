@@ -17,8 +17,9 @@ Le but de notre projet **C-Wire** vise à développer un programme permettant la
 
 ### Prérequis
 
-- **GnuPlot** : Pour la génération de graphiques
-et c'est tout !
+- **GnuPlot** : Pour la génération de graphiques  
+  
+Et c'est tout !
 
 ### L'installer
 
@@ -39,11 +40,19 @@ cd C-Wire
 ## Utilisation
 
 ### Lancer le programme
+
+Pour lancer le programme il suffit de tapper :
+
 ```bash
 ./c-wire.sh fichier_csv type_station type_consommateur
 ```
 
+avec :
+
 - **`fichier_csv`** : nom du fichier de données CSV
+
+> [!IMPORTANT] 
+> Pas besoin de mettre `input/data.csv` dans le terminal, `data.csv` est suffisant.
 
 - **`type_station`** : Type de station électrique
     - hvb : Haute Tension B
@@ -64,4 +73,3 @@ Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se
 
 > [!WARNING] 
 > Le fichier contenant les données doit se trouver dans le dossier `input`.  
-> Pas besoin de mettre `input/data.csv` mettre `data.csv` est suffisant.
