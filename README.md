@@ -1,15 +1,15 @@
 # C-Wire
 
-** MEF-2 • Trinome MEF-2_K
+**MEF-2 • Trinome MEF-2_K**
 
 ## Table des Matières 
-- [Description Générale](#description-générale)
+- [Introduction](#introduction)
 - [Installation](#installation)
 - [Utilisation](#utilisation)
 - [Organisation des Fichiers](#organisation-des-fichiers)
 - [Auteurs](#auteurs)
 
-## Description Générale
+## Introduction
 
 Le but de notre projet **C-Wire** vise à développer un programme permettant la synthèse de données d’un système de distribution d’électricité. Le programme analyse un vaste ensemble de données issues d’un fichier CSV détaillant la distribution d’électricité en France, depuis les centrales électriques jusqu’aux consommateurs finaux (entreprises et particuliers).
 
@@ -20,12 +20,44 @@ Le but de notre projet **C-Wire** vise à développer un programme permettant la
 - **GnuPlot** : Pour la génération de graphiques
 et c'est tout !
 
-### Cloner le Dépôt
+### L'installer
 
+Pour installer ce projet, suivez les étapes ci-dessous :
+
+1. **Cloner le dépôt GitHub**
 ```bash
 git clone https://github.com/charlyppr/C-Wire
-cd c-wire
 ```
+
+2. **Accédez au répertoire du projet** :
+```bash
+cd C-Wire
+```
+
+*Et voila ! 🎉*
 
 ## Utilisation
 
+### Lancer le programme
+```bash
+./c-wire.sh fichier_csv type_station type_consommateur
+```
+
+- **`fichier_csv`** : Chemin vers le fichier de données CSV
+
+- **`type_station`** : Type de station électrique
+    - hvb : Haute Tension B
+    - hva : Haute Tension A
+    - lv : Basse Tension
+
+- **`type_consommateur`**  : Catégorie de consommateur
+    - comp : Entreprises
+    - indiv : Particuliers
+    - all : Tous types
+
+### Exemple d'utilisation
+```bash
+./c-wire.sh input/data.csv hvb comp
+```
+
+Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se concentrant sur les stations de type **HVB** et les consommateurs de type **entreprises**.
