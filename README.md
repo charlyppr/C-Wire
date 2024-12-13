@@ -43,7 +43,7 @@ cd C-Wire
 ./c-wire.sh fichier_csv type_station type_consommateur
 ```
 
-- **`fichier_csv`** : Chemin vers le fichier de données CSV
+- **`fichier_csv`** : nom du fichier de données CSV
 
 - **`type_station`** : Type de station électrique
     - hvb : Haute Tension B
@@ -63,5 +63,5 @@ cd C-Wire
 Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se concentrant sur les stations de type **HVB** et les consommateurs de type **entreprises**.
 
 > [!WARNING] 
-> Le fichier contenant les données doit se trouver dans le dossier `input`.
-
+> Le fichier contenant les données doit se trouver dans le dossier `input`.  
+> Pas besoin de mettre `input/data.csv` mettre `data.csv` est suffisant.
