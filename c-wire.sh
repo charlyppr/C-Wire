@@ -170,7 +170,7 @@ if [ ! -s "$tmp_dir/$fichier_filtre" ]; then
 fi
 
 # Déterminer le nom du fichier de sortie
-output_filename="${type_station}_${type_consommateur}.csv"
+output_filename="${type_station}_${type_consommateur}"
 
 # Créer l'en-tête du fichier CSV
 station_header=""
@@ -190,7 +190,7 @@ esac
 header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 
 # Écrire l'en-tête dans le fichier de sortie
-echo "$header" > "$tests_dir/$output_filename"
+echo "$header" > "$tests_dir/$output_filename.csv"
 
 # Passer les données filtrées au programme C via un pipe et capturer la sortie
 output=$(./codeC/programme < "$tmp_dir/$fichier_filtre")
@@ -201,14 +201,17 @@ if [ -z "$output" ]; then
     exit 1
 fi
 
-# Écrire les résultats dans le fichier de sortie
-echo "$output" >> "$tests_dir/$output_filename"
+# Trier les résultats par capacité croissante
+sorted_output=$(echo "$output" | sort -t: -k2,2n)
 
-echo -e "Fichier '\033[1m$output_filename\033[0m' généré."
+# Écrire les résultats triés dans le fichier de sortie
+echo "$sorted_output" >> "$tests_dir/$output_filename.csv"
+
+echo -e "Fichier '\033[1m$output_filename.csv\033[0m' généré."
 
 # Si on est dans le cas lv all, on crée lv_all_minmax.csv
 if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
-    input_file="$tests_dir/$output_filename"
+    input_file="$tests_dir/$output_filename.csv"
     output_minmax="lv_all_minmax.csv"
 
     # Calculer la différence entre la capacité et la consommation
