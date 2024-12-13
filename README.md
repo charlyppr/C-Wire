@@ -44,7 +44,7 @@ cd C-Wire
 Pour lancer le programme il suffit de tapper :
 
 ```bash
-./c-wire.sh fichier_csv type_station type_consommateur
+./c-wire.sh <fichier_csv> <type_station> <type_consommateur>
 ```
 
 avec :
