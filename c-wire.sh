@@ -35,13 +35,6 @@ type_station="$2"
 type_consommateur="$3"
 identifiant_centrale="${4:-}"
 
-# Vérifier si l'identifiant de centrale est fourni
-if [ -n "$identifiant_centrale" ]; then
-    central_id_provided=true
-else
-    central_id_provided=false
-fi
-
 # Vérification de la présence du fichier CSV
 if [ ! -f "$chemin_csv" ]; then
     echo "Erreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect."
@@ -74,6 +67,8 @@ if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_con
     exit 1
 fi
 
+
+test_dir="tests"
 # Vérification de la présence des dossiers tmp et graphs
 tmp_dir="tmp"
 graphs_dir="graphs"
@@ -121,7 +116,7 @@ debut=$(date +%s)
 
 
 # Filtrage des données
-fichier_filtre="$tmp_dir/filtre.csv"
+fichier_filtre="$tmp_dir/data_filtre.csv"
 
 # Construire les motifs de grep en fonction des paramètres
 station_pattern=""
@@ -155,11 +150,7 @@ if [ ! -s "$fichier_filtre" ]; then
 fi
 
 # Déterminer le nom du fichier de sortie
-output_filename="${type_station}_${type_consommateur}"
-if [ "$central_id_provided" = true ]; then
-    output_filename="${output_filename}_${identifiant_centrale}"
-fi
-output_filename="${output_filename}.csv"
+output_filename="${type_station}_${type_consommateur}.csv"
 
 # Créer l'en-tête du fichier CSV
 station_header=""
@@ -199,38 +190,6 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     output_minmax="lv_all_minmax.csv"
 
     # Calculer la différence entre la capacité et la consommation
-    awk -F: '{ diff = $2 - $3; print $0 ":" diff }' "$input_file" > lv_all_with_diff.csv
-
-    # On trie par le quatrième champ (la différence), numérique
-    sort -t: -k4,4n lv_all_with_diff.csv > lv_all_sorted.csv
-
-    # On prend les 10 premières lignes (les plus petites différences)
-    head -n 10 lv_all_sorted.csv | cut -d: -f1-3 > lv_all_top10_min.csv
-
-    # On prend les 10 dernières lignes (les plus grandes différences)
-    # tail -n 10 lv_all_sorted.csv | cut -d: -f1-3 > lv_all_top10_max.csv
-
-    # On combine les deux fichiers
-    # cat lv_all_top10_min.csv lv_all_top10_max.csv > "$output_minmax"
-    cat lv_all_top10_min.csv > "$output_minmax"
-
-    # Nettoyage des fichiers temporaires
-    rm lv_all_with_diff.csv lv_all_sorted.csv lv_all_top10_min.csv lv_all_top10_max.csv
-
-    echo "Fichier $output_minmax généré."
-fi
-
-
-# Arrêter le chronomètre
-fin=$(date +%s)
-duree=$(( $fin - $debut ))
-
-# Si on est dans le cas lv all, on crée lv_all_minmax.csv
-if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
-    input_file="$output_filename"
-    output_minmax="lv_all_minmax.csv"
-
-    # Calculer la différence entre la capacité et la consommation
     awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" > $tmp_dir/lv_all_with_diff.csv
 
     # On trie les lignes par différence
@@ -243,13 +202,17 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     tail -n 10 $tmp_dir/lv_all_sorted.csv | cut -d: -f1-3 > $tmp_dir/lv_all_top10_max.csv
 
     # On combine les deux fichiers
-    cat $tmp_dir/lv_all_top10_min.csv $tmp_dir/lv_all_top10_max.csv > "$output_minmax"
+    cat $tmp_dir/lv_all_top10_min.csv $tmp_dir/lv_all_top10_max.csv > $test_dir/"$output_minmax"
     # cat $tmp_dir/lv_all_top10_min.csv > "$output_minmax"
 
     gnuplot graph.gp
 
     echo "Fichier $output_minmax généré."
 fi
+
+# Arrêter le chronomètre
+fin=$(date +%s)
+duree=$(( $fin - $debut ))
 
 # Afficher le temps de traitement
 echo "Durée de traitement : $duree secondes"

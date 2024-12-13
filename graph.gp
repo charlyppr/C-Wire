@@ -14,7 +14,7 @@ set title textcolor rgb "#FFFFFF"
 set xlabel textcolor rgb "#FFFFFF"
 set ylabel textcolor rgb "#FFFFFF"
 
-# Marges du graphique (à ajuster si besoin)
+# Marges du graphique
 set lmargin at screen 0.15
 set rmargin at screen 0.95
 set bmargin at screen 0.15
@@ -46,5 +46,5 @@ set border 3
 # $3 = Consommation
 # Barre verte : min(consommation, capacité)
 # Barre rouge : dépassement si consommation > capacité
-plot 'lv_all_minmax.csv' using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
+plot 'tests/lv_all_minmax.csv' using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
      '' using ($3>$2?$3-$2:0) title 'Consommation excédentaire' lc rgb "red"
