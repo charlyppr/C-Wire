@@ -1,4 +1,4 @@
-# C-Wire
+# <img width="60" src="https://cdn-icons-png.flaticon.com/512/1534/1534189.png">&nbsp;&nbsp; C-Wire &nbsp;&nbsp; <img width="60" src="https://cdn-icons-png.flaticon.com/512/1534/1534189.png">&nbsp;&nbsp;
 
 **MEF-2 • Trinome MEF-2_K**
 
