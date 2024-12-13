@@ -52,7 +52,7 @@ avec :
 - **`fichier_csv`** : nom du fichier de données CSV
 
 > [!IMPORTANT] 
-> Pas besoin de mettre `input/data.csv` dans le terminal, `data.csv` est suffisant.
+> Pas besoin de mettre `input/fichier_csv` dans le terminal, `fichier_csv` est suffisant.
 
 - **`type_station`** : Type de station électrique
     - hvb : Haute Tension B
@@ -72,4 +72,4 @@ avec :
 Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se concentrant sur les stations de type **HVB** et les consommateurs de type **entreprises**.
 
 > [!WARNING] 
-> Le fichier contenant les données doit se trouver dans le dossier `input`.  
+> Le fichier contenant les données `ficher_csv` doit se trouver dans le dossier `input`.  

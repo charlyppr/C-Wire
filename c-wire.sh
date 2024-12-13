@@ -44,6 +44,13 @@ type_station="$2"
 type_consommateur="$3"
 identifiant_centrale="${4:-}"
 
+# Vérification du chemin du fichier CSV
+if [[ "$1" == input/* ]]; then
+    echo -e "\033[31mErreur : Il n'est pas nécessaire de spécifier \033[1m'input/'\033[0m\033[31m dans le chemin du fichier CSV.\nUtilisez simplement le nom du fichier.\033[0m\n"
+    echo -e "Exemple : ./c-wire.sh data.csv hva comp\n"
+    exit 1
+fi
+
 # Vérification de la présence du fichier CSV
 if [ ! -f "$chemin_csv" ]; then
     echo -e "\033[31mErreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect.\033[0m"
