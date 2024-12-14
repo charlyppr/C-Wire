@@ -44,7 +44,7 @@ set border 3
 # $1 = Nom du poste LV
 # $2 = Capacité (limite)
 # $3 = Consommation
-# Barre verte : consommation
+# Barre verte : min(consommation, capacité)
 # Barre rouge : dépassement si consommation > capacité
-plot 'tests/lv_all_minmax.csv' skip 1 using ($3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
+plot 'tests/lv_all_minmax.csv' skip 1 using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
      '' skip 1 using ($3>$2?$3-$2:0) title 'Consommation excédentaire' lc rgb "red"
