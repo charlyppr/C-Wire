@@ -23,7 +23,7 @@ set tmargin at screen 0.85
 # Titres et labels avec polices plus grandes
 set title "Consommation d'énergie par poste LV" font 'Helvetica Bold,24' offset 0, 1.5
 set xlabel "Postes LV" font 'Helvetica,18' offset 0, -2
-set ylabel "Consommation (kWh)" font 'Helvetica,18' offset -3, 0
+set ylabel "Consommation (kWh)" font 'Helvetica,18' offset -4, 0
 
 # Personnalisation de la légende et des axes
 set key top right font 'Helvetica,16'
@@ -44,7 +44,7 @@ set border 3
 # $1 = Nom du poste LV
 # $2 = Capacité (limite)
 # $3 = Consommation
-# Barre verte : min(consommation, capacité)
+# Barre verte : consommation
 # Barre rouge : dépassement si consommation > capacité
-plot 'tests/lv_all_minmax.csv' skip 1 using ($3>$2?$2:$3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
+plot 'tests/lv_all_minmax.csv' skip 1 using ($3):xtic(1) title 'Consommation à la capacité' lc rgb "green", \
      '' skip 1 using ($3>$2?$3-$2:0) title 'Consommation excédentaire' lc rgb "red"
