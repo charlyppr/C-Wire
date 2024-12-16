@@ -118,12 +118,6 @@ fi
 echo -e "\033[1m\033[32mCompilation réussie.\033[0m\n"
 cd ..
 
-# Démarrer le chronomètre
-debut=$(date +%s)
-
-# Filtrage des données
-fichier_filtre="data_filtre.csv"
-
 # Construire les motifs de grep en fonction des paramètres
 station_pattern=""
 case "$type_station" in
@@ -145,21 +139,6 @@ case "$type_station" in
     "lv") numero_ligne="4";;
 esac
 
-# Filtrage avec grep
-grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme > $tmp_dir/$fichier_filtre
-
-echo -e "Fichier '\033[1m$fichier_filtre\033[0m' généré."
-
-# Vérifiez si le fichier filtre n'est pas vide
-if [ ! -s "$tmp_dir/$fichier_filtre" ]; then
-    echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
-    exit 0
-fi
-
-# Déterminer le nom du fichier de sortie
-output_filename="${type_station}_${type_consommateur}"
-
 # Créer l'en-tête du fichier CSV
 station_header=""
 case "$type_station" in
@@ -175,30 +154,49 @@ case "$type_consommateur" in
     ("all") consumer_header="Consommation (tous)";;
 esac
 
+# Déterminer le nom du fichier de sortie
+output_filename="${type_station}_${type_consommateur}.csv"
+
 header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 
 # Écrire l'en-tête dans le fichier de sortie
-echo "$header" > "$tests_dir/$output_filename.csv"
+echo "$header" > "$tests_dir/$output_filename"
 
-# Trier les résultats par capacité croissante
-sort -t: -k2,2n "$tmp_dir/$fichier_filtre" >> "$tests_dir/$output_filename.csv"
+# Démarrer le chronomètre
+debut=$(date +%s)
 
-echo -e "Fichier '\033[1m$output_filename.csv\033[0m' généré."
+# Filtrage avec grep
+grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $tests_dir/$output_filename
+
+# Vérifiez si le fichier filtre n'est pas vide
+if [ ! -s "$tests_dir/$output_filename" ]; then
+    echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
+    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    exit 0
+fi
+
+echo -e "Fichier '\033[1m$output_filename\033[0m' généré."
 
 # Si on est dans le cas lv all, on crée lv_all_minmax.csv
 if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
-    input_file="$tests_dir/$output_filename.csv"
+    input_file="$tests_dir/$output_filename"
     output_minmax="lv_all_minmax.csv"
 
     # Créer l'en-tête du fichier CSV
     echo "$header" > "$tests_dir/$output_minmax"
 
-    
+    # Calculer les différences min et max
     awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$tests_dir/$output_minmax"
+    echo -e "Fichier '\033[1m$output_minmax\033[0m' généré."
 
+    # Générer le graphique
     gnuplot input/graph.gp
 
-    echo -e "Fichier '\033[1m$output_minmax\033[0m' généré."
+    # Vérifier si le graphique a été créé
+    if [ ! -f "$graphs_dir/lv_all_minmax.png" ]; then
+        echo -e "\033[31mErreur : Le graphique 'lv_all_minmax.png' n'a pas été créé.\033[0m"
+    fi
+
     echo -e "Graphique '\033[1mlv_all_minmax.png\033[0m' généré."
 fi
 
