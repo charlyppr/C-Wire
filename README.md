@@ -44,7 +44,7 @@ cd C-Wire
 Pour lancer le programme il suffit de tapper :
 
 ```bash
-./c-wire.sh <chemin_csv> <type_station> <type_consommateur>
+./c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]
 ```
 
 avec :
@@ -60,6 +60,9 @@ avec :
     - **comp** : Entreprises
     - **indiv** : Particuliers
     - **all** : Tous types
+
+- **`identifiant_centrale`** : Identifiant de la centrale  
+    - **optionel**
 
 ### Exemple d'utilisation
 ```bash
