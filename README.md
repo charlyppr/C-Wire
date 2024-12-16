@@ -44,15 +44,12 @@ cd C-Wire
 Pour lancer le programme il suffit de tapper :
 
 ```bash
-./c-wire.sh <fichier_csv> <type_station> <type_consommateur>
+./c-wire.sh <chemin_csv> <type_station> <type_consommateur>
 ```
 
 avec :
 
-- **`fichier_csv`** : nom du fichier de données CSV
-
-> [!IMPORTANT] 
-> Pas besoin de mettre `input/fichier_csv` dans le terminal, `fichier_csv` est suffisant.
+- **`chemin_csv`** : Chemin du fichier de données CSV
 
 - **`type_station`** : Type de station électrique
     - **hvb** : Haute Tension B
