@@ -180,17 +180,7 @@ header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 # Écrire l'en-tête dans le fichier de sortie
 echo "$header" > "$tests_dir/$output_filename.csv"
 
-# Passer les données filtrées au programme C via un pipe et capturer la sortie
-# output=$(./codeC/programme < "$tmp_dir/$fichier_filtre")
-
-# Vérifier si le programme C a retourné une sortie
-#if [ -z "$output" ]; then
-#    echo "\033[31mErreur : Le programme C n'a retourné aucune donnée.\033[0m"
-#    exit 1
-#fi
-
 # Trier les résultats par capacité croissante
-# sorted_output=$(echo "$tmp_dir/$fichier_filtre" | sort -t: -k2,2n)
 sort -t: -k2,2n "$tmp_dir/$fichier_filtre" >> "$tests_dir/$output_filename.csv"
 
 echo -e "Fichier '\033[1m$output_filename.csv\033[0m' généré."
@@ -203,6 +193,7 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     # Créer l'en-tête du fichier CSV
     echo "$header" > "$tests_dir/$output_minmax"
 
+    
     awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$tests_dir/$output_minmax"
 
     gnuplot input/graph.gp
