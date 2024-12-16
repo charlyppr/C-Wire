@@ -200,24 +200,10 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
     input_file="$tests_dir/$output_filename.csv"
     output_minmax="lv_all_minmax.csv"
 
-    # Calculer la différence entre la capacité et la consommation
-    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" > $tmp_dir/lv_all_with_diff.csv
-
-    # On trie les lignes par différence
-    sort -t: -k4,4n $tmp_dir/lv_all_with_diff.csv > $tmp_dir/lv_all_sorted.csv
-
-    # On prend les 10 premières lignes (les plus grandes différences)
-    head -n 10 $tmp_dir/lv_all_sorted.csv | cut -d: -f1-3 > $tmp_dir/lv_all_top10_min.csv
-
-    # On prend les 10 dernières lignes (les plus petites différences)
-    tail -n 10 $tmp_dir/lv_all_sorted.csv | cut -d: -f1-3 > $tmp_dir/lv_all_top10_max.csv
-
     # Créer l'en-tête du fichier CSV
     echo "$header" > "$tests_dir/$output_minmax"
 
-    # On combine les deux fichiers
-    cat $tmp_dir/lv_all_top10_min.csv $tmp_dir/lv_all_top10_max.csv >> $tests_dir/"$output_minmax"
-    # cat $tmp_dir/lv_all_top10_min.csv > "$output_minmax"
+    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$tests_dir/$output_minmax"
 
     gnuplot input/graph.gp
 
