@@ -6,11 +6,12 @@ clear
 
 # Fonction pour afficher l'aide
 afficher_aide() {
-    echo -e "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur>\n"
+    echo -e "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]\n"
     echo "Paramètres :"
     echo "  <chemin_csv>         : Chemin du fichier CSV des données"
     echo "  <type_station>       : Type de station (hvb | hva | lv)"
     echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
+    echo "  [identifiant_centrale]: (Optionnel) Identifiant de la centrale"
     echo -e "\nExemple : ./c-wire.sh data.csv hva comp\n"
     echo -e "  [-h]                 : Affiche l'aide\n"
 }
@@ -118,16 +119,31 @@ fi
 echo -e "\033[1m\033[32mCompilation réussie.\033[0m\n"
 cd ..
 
+# Vérification de l'existence de l'identifiant_centrale
+if [ -n "$identifiant_centrale" ]; then
+    if ! grep -q "^$identifiant_centrale;" "$chemin_csv"; then
+        echo -e "\033[31mErreur : l'identifiant de la centrale '$identifiant_centrale' n'existe pas dans le fichier CSV.\033[0m\n"
+        echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+        exit 1
+    fi
+fi
+
 # Construire les motifs de grep en fonction des paramètres
 station_pattern=""
+if [ -n "$identifiant_centrale" ]; then
+    central_pattern="^$identifiant_centrale"
+else
+    central_pattern="^[0-9]+"
+fi
+
 case "$type_station" in
-    "hvb") station_pattern="^[0-9]+;[0-9]+;-;-;";;
-    "hva") station_pattern="^[0-9]+;[0-9-]+;[0-9]+;-;";;
+    "hvb") station_pattern="$central_pattern;[0-9]+;-;-;";;
+    "hva") station_pattern="$central_pattern;[0-9-]+;[0-9]+;-;";;
     "lv") 
         case "$type_consommateur" in
-            "comp") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;[0-9-]+;-;";;
-            "indiv") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;-;[0-9-]+;";;
-            "all") station_pattern="^[0-9]+;-;[0-9-]+;[0-9]+;";;
+            "comp") station_pattern="$central_pattern;-;[0-9-]+;[0-9]+;[0-9-]+;-;";;
+            "indiv") station_pattern="$central_pattern;-;[0-9-]+;[0-9]+;-;[0-9-]+;";;
+            "all") station_pattern="$central_pattern;-;[0-9-]+;[0-9]+;";;
         esac
 esac
 
