@@ -146,7 +146,7 @@ case "$type_station" in
 esac
 
 # Filtrage avec grep
-grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' > $tmp_dir/$fichier_filtre
+grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme > $tmp_dir/$fichier_filtre
 
 echo -e "Fichier '\033[1m$fichier_filtre\033[0m' généré."
 
@@ -181,19 +181,17 @@ header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 echo "$header" > "$tests_dir/$output_filename.csv"
 
 # Passer les données filtrées au programme C via un pipe et capturer la sortie
-output=$(./codeC/programme < "$tmp_dir/$fichier_filtre")
+# output=$(./codeC/programme < "$tmp_dir/$fichier_filtre")
 
 # Vérifier si le programme C a retourné une sortie
-if [ -z "$output" ]; then
-    echo "\033[31mErreur : Le programme C n'a retourné aucune donnée.\033[0m"
-    exit 1
-fi
+#if [ -z "$output" ]; then
+#    echo "\033[31mErreur : Le programme C n'a retourné aucune donnée.\033[0m"
+#    exit 1
+#fi
 
 # Trier les résultats par capacité croissante
-sorted_output=$(echo "$output" | sort -t: -k2,2n)
-
-# Écrire les résultats triés dans le fichier de sortie
-echo "$sorted_output" >> "$tests_dir/$output_filename.csv"
+# sorted_output=$(echo "$tmp_dir/$fichier_filtre" | sort -t: -k2,2n)
+sort -t: -k2,2n "$tmp_dir/$fichier_filtre" >> "$tests_dir/$output_filename.csv"
 
 echo -e "Fichier '\033[1m$output_filename.csv\033[0m' généré."
 
