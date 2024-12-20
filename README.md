@@ -72,7 +72,7 @@ avec :
 Ce qui précède exécute le programme en utilisant le fichier `data.csv`, en se concentrant sur les stations de type **HVB** et les consommateurs de type **entreprises**.
 
 > [!WARNING] 
-> Le fichier contenant les données `ficher_csv` doit se trouver dans le dossier `input`.  
+> Le fichier contenant les données `chemin_csv` doit se trouver dans le dossier `input`.  
 
 ## Organisation des fichiers
 
@@ -82,16 +82,24 @@ C-Wire/
 ├── codeC/ 
 │ ├── fonctions.h 
 │ ├── main.c 
+│ ├── main.o
 │ ├── makefile 
+│ ├── programme
 │ └── struct.h 
 │ 
 ├── graphs/ 
 │ 
 ├── input/ 
-│ ├── fichier_csv.csv  // Fichier à ajouter
+│ ├── data.csv  // Fichier à ajouter
 │ └── graph.gp 
 │ 
 ├── tests/ 
+│ ├── hva_comp.csv
+│ ├── hvb_comp.csv
+│ ├── lv_all_minmax.csv
+│ ├── lv_all.csv
+│ ├── lv_comp.csv
+│ └── lv_indiv.gp 
 │ 
 ├── tmp/ 
 │ 
