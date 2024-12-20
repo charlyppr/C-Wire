@@ -163,51 +163,51 @@ case "$type_station" in
     ("lv") station_header="Station LV";;
 esac
 
-consumer_header=""
+conso_header=""
 case "$type_consommateur" in
-    ("comp") consumer_header="Consommation (entreprises)";;
-    ("indiv") consumer_header="Consommation (particuliers)";;
-    ("all") consumer_header="Consommation (tous)";;
+    ("comp") conso_header="Consommation (entreprises)";;
+    ("indiv") conso_header="Consommation (particuliers)";;
+    ("all") conso_header="Consommation (tous)";;
 esac
 
 # Déterminer le nom du fichier de sortie
 if [ -n "$identifiant_centrale" ]; then
-    output_filename="${type_station}_${type_consommateur}_${identifiant_centrale}.csv"
+    fichier_sortie="${type_station}_${type_consommateur}_${identifiant_centrale}.csv"
 else
-    output_filename="${type_station}_${type_consommateur}.csv"
+    fichier_sortie="${type_station}_${type_consommateur}.csv"
 fi
 
-header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
+header="${station_header}:Capacité en kWh:${conso_header} en kWh"
 
 # Écrire l'en-tête dans le fichier de sortie
-echo "$header" > "$output_filename"
+echo "$header" > "$fichier_sortie"
 
 # Démarrer le chronomètre
 debut=$(date +%s)
 
 # Filtrage avec grep
-grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $output_filename
+grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $fichier_sortie
 
 # Vérifiez si le fichier filtre n'est pas vide
-if [ ! -s "$output_filename" ]; then
+if [ ! -s "$fichier_sortie" ]; then
     echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
     echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 0
 fi
 
-echo -e "Fichier '\033[1m$output_filename\033[0m' généré."
+echo -e "Fichier '\033[1m$fichier_sortie\033[0m' généré."
 
 # Si on est dans le cas lv all et qu'il n'y a pas d'identifiant de centrale, on crée lv_all_minmax.csv
 if [[ "$type_station" == "lv" && "$type_consommateur" == "all" && -z "$identifiant_centrale" ]]; then
-    input_file="$output_filename"
-    output_minmax="lv_all_minmax.csv"
+    fichier_debut="$fichier_sortie"
+    minmax_sortie="lv_all_minmax.csv"
 
     # Créer l'en-tête du fichier CSV
-    echo "$header" > "$output_minmax"
+    echo "$header" > "$minmax_sortie"
 
     # Calculer les différences min et max
-    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$output_minmax"
-    echo -e "Fichier '\033[1m$output_minmax\033[0m' généré."
+    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$fichier_debut" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$minmax_sortie"
+    echo -e "Fichier '\033[1m$minmax_sortie\033[0m' généré."
 
     # Générer le graphique
     gnuplot input/graph.gp
