@@ -195,7 +195,8 @@ if [ ! -s "$fichier_sortie" ]; then
     exit 0
 fi
 
-echo -e "Fichier '\033[1m$fichier_sortie\033[0m' généré."
+duree_fichier=$(($(date +%s%N) - $debut))
+echo -e "Fichier '\033[1m$fichier_sortie\033[0m' généré en \033[1m$((duree_fichier / 1000000000)).$(((duree_fichier / 1000000) % 1000)) secondes\033[0m"
 
 # Si on est dans le cas lv all et qu'il n'y a pas d'identifiant de centrale, on crée lv_all_minmax.csv
 if [[ "$type_station" == "lv" && "$type_consommateur" == "all" && -z "$identifiant_centrale" ]]; then
@@ -207,7 +208,9 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" && -z "$identifia
 
     # Calculer les différences min et max
     awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$fichier_debut" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$minmax_sortie"
-    echo -e "Fichier '\033[1m$minmax_sortie\033[0m' généré."
+    
+    duree_minmax=$(($(date +%s%N) - $debut  - $duree_fichier))
+    echo -e "Fichier '\033[1m$minmax_sortie\033[0m' généré en \033[1m$((duree_minmax / 1000000000)).$(((duree_minmax / 1000000) % 1000)) secondes\033[0m"
 
     # Générer le graphique
     gnuplot input/graph.gp
@@ -217,7 +220,9 @@ if [[ "$type_station" == "lv" && "$type_consommateur" == "all" && -z "$identifia
         echo -e "\033[31mErreur : Le graphique 'lv_all_minmax.png' n'a pas été créé.\033[0m"
     fi
 
-    echo -e "Graphique '\033[1mlv_all_minmax.png\033[0m' généré."
+    duree_graph=$(($(date +%s%N) - debut - duree_fichier - duree_minmax))
+    printf -v duree_graph_format "Graphique '\033[1mlv_all_minmax.png\033[0m' généré en \033[1m%.3f secondes\033[0m" "$(($duree_graph/1000000))e-3"
+    echo -e "$duree_graph_format"
 fi
 
 echo -e "\n\033[1m\033[32mTraitement terminé avec succès.\033[0m"
@@ -227,4 +232,4 @@ fin=$(date +%s%N)
 duree=$(( ($fin - $debut) / 1000000 ))
 
 # Afficher le temps de traitement
-echo -e "\nDurée de traitement : \033[1m$((duree / 1000)).$((duree % 1000)) secondes\033[0m\n"
+echo -e "\nDurée de traitement totale : \033[1m$((duree / 1000)).$((duree % 1000)) secondes\033[0m\n"
