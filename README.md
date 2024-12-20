@@ -19,7 +19,7 @@ Le but de notre projet **C-Wire** vise à développer un programme permettant la
 
 - **GnuPlot** : Pour la génération de graphiques  
   
-Et c'est tout !
+*Et c'est tout !*
 
 ### L'installer
 
