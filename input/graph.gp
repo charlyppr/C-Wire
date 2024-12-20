@@ -6,13 +6,13 @@ set output 'graphs/lv_all_minmax.png'
 set object 1 rectangle from screen 0,0 to screen 1,1 behind fc rgb "#002936" fillstyle solid 1.0
 
 # Couleurs et style des éléments du graphique
-set border lc rgb "#FFFFFF"
+set border lc rgb "white"
 set grid ytics lc rgb "#888888" lt 2 dashtype 3
-set key textcolor rgb "#FFFFFF"
-set tics textcolor rgb "#FFFFFF"
-set title textcolor rgb "#FFFFFF"
-set xlabel textcolor rgb "#FFFFFF"
-set ylabel textcolor rgb "#FFFFFF"
+set key textcolor rgb "white"
+set tics textcolor rgb "white"
+set title textcolor rgb "white"
+set xlabel textcolor rgb "white"
+set ylabel textcolor rgb "white"
 
 # Marges du graphique
 set lmargin at screen 0.15

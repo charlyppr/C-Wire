@@ -171,7 +171,11 @@ case "$type_consommateur" in
 esac
 
 # Déterminer le nom du fichier de sortie
-output_filename="${type_station}_${type_consommateur}.csv"
+if [ -n "$identifiant_centrale" ]; then
+    output_filename="${type_station}_${type_consommateur}_${identifiant_centrale}.csv"
+else
+    output_filename="${type_station}_${type_consommateur}.csv"
+fi
 
 header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 
@@ -193,8 +197,8 @@ fi
 
 echo -e "Fichier '\033[1m$output_filename\033[0m' généré."
 
-# Si on est dans le cas lv all, on crée lv_all_minmax.csv
-if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
+# Si on est dans le cas lv all et qu'il n'y a pas d'identifiant de centrale, on crée lv_all_minmax.csv
+if [[ "$type_station" == "lv" && "$type_consommateur" == "all" && -z "$identifiant_centrale" ]]; then
     input_file="$output_filename"
     output_minmax="lv_all_minmax.csv"
 
