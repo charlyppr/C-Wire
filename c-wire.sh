@@ -8,12 +8,12 @@ clear
 afficher_aide() {
     echo -e "Comment l'utiliser : ./c-wire.sh <chemin_csv> <type_station> <type_consommateur> [identifiant_centrale]\n"
     echo "Paramètres :"
-    echo "  <chemin_csv>         : Chemin du fichier CSV des données"
-    echo "  <type_station>       : Type de station (hvb | hva | lv)"
-    echo "  <type_consommateur>  : Type de consommateur (comp | indiv | all)"
+    echo "  <chemin_csv>          : Chemin du fichier CSV des données"
+    echo "  <type_station>        : Type de station (hvb | hva | lv)"
+    echo "  <type_consommateur>   : Type de consommateur (comp | indiv | all)"
     echo "  [identifiant_centrale]: (Optionnel) Identifiant de la centrale"
     echo -e "\nExemple : ./c-wire.sh data.csv hva comp\n"
-    echo -e "  [-h]                 : Affiche l'aide\n"
+    echo -e "  [-h]                  : Affiche l'aide\n"
 }
 
 # Fonction pour afficher les combinaisons possibles
@@ -29,7 +29,7 @@ afficher_combinaisons() {
 # Vérification de l'option d'aide (-h)
 if [[ "$*" == *"-h"* ]]; then
     afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 0
 fi
 
@@ -37,7 +37,7 @@ fi
 if [ "$#" -lt 3 ]; then
     echo -e "\033[31mErreur : Nombre de paramètres insuffisant.\033[0m\n"
     afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -52,7 +52,7 @@ if [ ! -f "$chemin_csv" ]; then
     echo -e "\033[31mErreur : Le fichier CSV spécifié n'existe pas ou le chemin est incorrect.\033[0m"
     echo -e "Vérifier que le fichier est bien présent dans le dossier '\033[1minput\033[0m' et que son nom est correct.\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -60,7 +60,7 @@ fi
 if [[ "$type_station" != "hvb" && "$type_station" != "hva" && "$type_station" != "lv" ]]; then
     echo -e "\033[31mErreur : Type de station invalide. \n\033[1mValeurs possibles : hvb, hva, lv.\033[0m\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -68,7 +68,7 @@ fi
 if [[ "$type_consommateur" != "comp" && "$type_consommateur" != "indiv" && "$type_consommateur" != "all" ]]; then
     echo -e "\033[31mErreur : Type de consommateur invalide. \n\033[1mValeurs possibles : comp, indiv, all.\033[0m\n"
     # afficher_aide
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -76,7 +76,7 @@ fi
 if { [[ "$type_station" == "hvb" || "$type_station" == "hva" ]] && [[ "$type_consommateur" == "all" || "$type_consommateur" == "indiv" ]]; }; then
     echo -e "\033[31mErreur : Les combinaisons \033[1m$type_station\033[0m\033[31m avec \033[1m$type_consommateur\033[0m\033[31m sont interdites.\033[0m\n"
     afficher_combinaisons
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 1
 fi
 
@@ -123,7 +123,7 @@ cd ..
 if [ -n "$identifiant_centrale" ]; then
     if ! grep -q "^$identifiant_centrale;" "$chemin_csv"; then
         echo -e "\033[31mErreur : l'identifiant de la centrale '$identifiant_centrale' n'existe pas dans le fichier CSV.\033[0m\n"
-        echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+        echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
         exit 1
     fi
 fi
@@ -183,7 +183,7 @@ header="${station_header}:Capacité en kWh:${conso_header} en kWh"
 echo "$header" > "$fichier_sortie"
 
 # Démarrer le chronomètre
-debut=$(date +%s)
+debut=$(date +%s%N)
 
 # Filtrage avec grep
 grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $fichier_sortie
@@ -191,7 +191,7 @@ grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr
 # Vérifiez si le fichier filtre n'est pas vide
 if [ ! -s "$fichier_sortie" ]; then
     echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
-    echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
+    echo -e "Durée de traitement : \033[1m0.0 seconde\033[0m\n"
     exit 0
 fi
 
@@ -223,8 +223,8 @@ fi
 echo -e "\n\033[1m\033[32mTraitement terminé avec succès.\033[0m"
 
 # Arrêter le chronomètre
-fin=$(date +%s)
-duree=$(( $fin - $debut ))
+fin=$(date +%s%N)
+duree=$(( ($fin - $debut) / 1000000 ))
 
 # Afficher le temps de traitement
-echo -e "\nDurée de traitement : \033[1m$duree secondes\033[0m\n"
+echo -e "\nDurée de traitement : \033[1m$((duree / 1000)).$((duree % 1000)) secondes\033[0m\n"
