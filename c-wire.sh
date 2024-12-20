@@ -176,16 +176,16 @@ output_filename="${type_station}_${type_consommateur}.csv"
 header="${station_header}:Capacité en kWh:${consumer_header} en kWh"
 
 # Écrire l'en-tête dans le fichier de sortie
-echo "$header" > "$tests_dir/$output_filename"
+echo "$header" > "$output_filename"
 
 # Démarrer le chronomètre
 debut=$(date +%s)
 
 # Filtrage avec grep
-grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $tests_dir/$output_filename
+grep -E "$station_pattern" "$chemin_csv" | cut -d ';' -f"$numero_ligne",7,8 | tr '-' '0' | ./codeC/programme | sort -t: -k2,2n >> $output_filename
 
 # Vérifiez si le fichier filtre n'est pas vide
-if [ ! -s "$tests_dir/$output_filename" ]; then
+if [ ! -s "$output_filename" ]; then
     echo "\033[31mAucune donnée filtrée à traiter.\033[0m"
     echo -e "Durée de traitement : \033[1m0 seconde\033[0m\n"
     exit 0
@@ -195,14 +195,14 @@ echo -e "Fichier '\033[1m$output_filename\033[0m' généré."
 
 # Si on est dans le cas lv all, on crée lv_all_minmax.csv
 if [[ "$type_station" == "lv" && "$type_consommateur" == "all" ]]; then
-    input_file="$tests_dir/$output_filename"
+    input_file="$output_filename"
     output_minmax="lv_all_minmax.csv"
 
     # Créer l'en-tête du fichier CSV
-    echo "$header" > "$tests_dir/$output_minmax"
+    echo "$header" > "$output_minmax"
 
     # Calculer les différences min et max
-    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$tests_dir/$output_minmax"
+    awk -F: 'NR>1 { diff = $2 - $3; print $0 ":" diff }' "$input_file" | sort -t: -k4,4n | (head -n 10; tail -n 10) | cut -d: -f1-3 >> "$output_minmax"
     echo -e "Fichier '\033[1m$output_minmax\033[0m' généré."
 
     # Générer le graphique
